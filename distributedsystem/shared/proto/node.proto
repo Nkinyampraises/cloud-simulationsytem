@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package node;
+
+service NodeService {
+    rpc ReceiveFile (stream FileChunk) returns (UploadResponse);
+    rpc SendFile (FileRequest) returns (stream FileChunk);
+}
+
+message FileChunk {
+    string filename = 1;
+    bytes content = 2;
+    int32 chunk_number = 3;
+    int32 total_chunks = 4;
+    string checksum = 5;
+}
+
+message FileRequest {
+    string filename = 1;
+}
+
+message UploadResponse {
+    bool success = 1;
+    string message = 2;
+}

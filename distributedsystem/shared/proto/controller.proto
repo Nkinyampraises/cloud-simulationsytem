@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package controller;
+
+service ControllerService {
+    rpc RegisterNode (NodeInfo) returns (RegistrationResponse);
+    rpc Heartbeat (NodeStatus) returns (HeartbeatResponse);
+    rpc UploadFile (stream FileChunk) returns (UploadResponse);
+    rpc DownloadFile (FileRequest) returns (stream FileChunk);
+    rpc RequestFile (FileRequest) returns (FileLocation);
+    rpc ListFiles (Empty) returns (FileList);
+}
+
+message NodeInfo {
+    string ip = 1;
+    string mac = 2;
+    int32 ram = 3;
+    string cpu = 4;
+    int32 bandwidth = 5;
+    int32 storage = 6;
+    string hdd = 7;
+    int32 port = 8;
+}
+
+message NodeStatus {
+    string ip = 1;
+    bool is_active = 2;
+}
+
+message FileChunk {
+    string filename = 1;
+    bytes content = 2;
+    int32 chunk_number = 3;
+    int32 total_chunks = 4;
+    string checksum = 5;
+}
+
+message FileRequest {
+    string filename = 1;
+    string requesting_node_ip = 2;
+}
+
+message FileLocation {
+    string node_ip = 1;
+    int32 node_port = 2;
+    bool is_online = 3;
+}
+
+message FileList {
+    repeated string filenames = 1;
+}
+
+message RegistrationResponse {
+    bool success = 1;
+    string message = 2;
+}
+
+message HeartbeatResponse {
+    bool acknowledged = 1;
+}
+
+message UploadResponse {
+    bool success = 1;
+    string message = 2;
+    int32 replication_count = 3;
+}
+
+message Empty {}
